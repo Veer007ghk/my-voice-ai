@@ -2,119 +2,137 @@ import streamlit as st
 import asyncio
 import edge_tts
 import os
+from googletrans import Translator
 
-# Ultra Clean Page Config
-st.set_page_config(page_title="Harsh AI Studio Pro", page_icon="🎙️", layout="wide")
+# Page Configuration
+st.set_page_config(page_title="Harsh AI Ultimate Studio", page_icon="🎙️", layout="wide")
 
-# Modern Light Theme - Fully English Labels
+# Translator Initialize
+translator = Translator()
+
+# Premium CSS Styling
 st.markdown("""
     <style>
-    .stApp { background-color: #FFFFFF; color: #202124; }
+    .stApp { background-color: #FFFFFF; }
     .main-header {
-        background: linear-gradient(90deg, #1A73E8, #4285F4);
+        background: linear-gradient(90deg, #1A73E8, #34A853);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 3rem; font-weight: 800; text-align: center;
     }
-    .stTextArea textarea {
-        border: 2px solid #E0E0E0 !important;
-        border-radius: 15px !important;
-        background-color: #F8F9FA !important;
+    .stats-card {
+        background: #F1F3F4; padding: 15px; border-radius: 10px;
+        text-align: center; border: 1px solid #E0E0E0;
     }
     .stButton>button {
-        background-color: #1A73E8 !important;
-        color: white !important;
-        border-radius: 12px !important;
-        font-weight: bold !important;
-        width: 100%; height: 50px;
+        border-radius: 10px !important; font-weight: bold !important;
+        height: 45px; transition: 0.3s;
     }
-    .stats-box {
-        padding: 10px; border-radius: 10px; background-color: #E8F0FE;
-        color: #1967D2; font-weight: bold; text-align: center; margin-bottom: 10px;
-    }
-    label { font-size: 1rem !important; font-weight: 600 !important; color: #3C4043 !important; }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='main-header'>Harsh AI Voice Studio</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: gray;'>Premium Vocal Production Platform</p>", unsafe_allow_html=True)
-st.write("---")
+st.markdown("<h1 class='main-header'>Harsh AI Ultimate Studio</h1>", unsafe_allow_html=True)
 
+# Sidebar for Advanced Tools
+with st.sidebar:
+    st.header("🛠️ ADVANCED TOOLS")
+    
+    # Feature 1: Auto-Translation
+    st.subheader("1. Instant Translator")
+    source_text = st.text_area("Paste Hindi text to translate:")
+    if st.button("Translate to English"):
+        if source_text:
+            translated = translator.translate(source_text, src='hi', dest='en')
+            st.success("Translated Text:")
+            st.code(translated.text)
+        else:
+            st.warning("Please enter text first.")
+
+    st.write("---")
+    st.subheader("2. Interview Mode Help")
+    st.info("To create an interview, generate Person 1's audio, then Person 2's, and join them in your video editor. (Full auto-merge coming soon!)")
+
+# Main Dashboard
 col1, col2 = st.columns([1.5, 1], gap="large")
 
 with col1:
-    st.markdown("### 🖋️ SCRIPT EDITOR")
-    text_data = st.text_area("Enter your script here:", height=380, placeholder="Type or paste your content...", key="user_script")
+    st.markdown("### 🖋️ SCRIPT & ANALYSIS")
+    script = st.text_area("Enter your script here:", height=350, placeholder="Hello everyone, today we discuss...", key="main_script")
     
-    # Feature: Real-time Stats
-    char_count = len(text_data)
-    words = len(text_data.split())
-    est_time = round(words / 2.5) # Approx 150 words per minute
+    # Feature 2: Stats Box
+    words = len(script.split())
+    chars = len(script)
+    est_time = round(words / 2.5)
     
-    st.markdown(f"""
-        <div style='display: flex; gap: 10px;'>
-            <div class='stats-box' style='flex: 1;'>Characters: {char_count}</div>
-            <div class='stats-box' style='flex: 1;'>Words: {words}</div>
-            <div class='stats-box' style='flex: 1;'>Est. Duration: {est_time}s</div>
-        </div>
-    """, unsafe_allow_html=True)
+    s1, s2, s3 = st.columns(3)
+    s1.markdown(f"<div class='stats-card'>📝 Words<br><b>{words}</b></div>", unsafe_allow_html=True)
+    s2.markdown(f"<div class='stats-card'>🔢 Characters<br><b>{chars}</b></div>", unsafe_allow_html=True)
+    s3.markdown(f"<div class='stats-card'>⏳ Est. Time<br><b>{est_time}s</b></div>", unsafe_allow_html=True)
 
-    if st.button("🗑️ Clear Canvas"):
-        st.session_state.user_script = ""
+    if st.button("🗑️ Reset Editor"):
+        st.session_state.main_script = ""
         st.rerun()
 
 with col2:
-    st.markdown("### 🎙️ VOCAL LIBRARY")
+    st.markdown("### 🎙️ VOCAL CONFIGURATION")
+    
     v_map = {
-        "1. Madhur (Hindi Male)": "hi-IN-MadhurNeural",
-        "2. Swara (Hindi Female)": "hi-IN-SwaraNeural",
-        "3. Asad (Urdu/Hindi Deep Male)": "ur-PK-AsadNeural",
-        "4. Uzma (Urdu/Hindi Soft Female)": "ur-PK-UzmaNeural",
-        "5. Prabhat (Indian English Male)": "en-IN-PrabhatNeural",
-        "6. Neerja (Indian English Female)": "en-IN-NeerjaNeural",
-        "7. Ravi (Indian English Male)": "en-IN-RaviNeural",
-        "8. Christopher (US Male - Deep)": "en-US-ChristopherNeural",
-        "9. Guy (US Male - Neutral)": "en-US-GuyNeural",
-        "10. Ava (US Female - Soft)": "en-US-AvaNeural",
-        "11. Jenny (US Female - Professional)": "en-US-JennyNeural",
-        "12. Thomas (UK Male - Serious)": "en-GB-ThomasNeural",
-        "13. Ryan (UK Male - Young)": "en-GB-RyanNeural",
-        "14. Libby (UK Female - Clear)": "en-GB-LibbyNeural",
-        "15. Maisie (UK Female - Soft)": "en-GB-MaisieNeural"
+        "--- HINDI MODELS ---": "hi-IN-MadhurNeural",
+        "Madhur (Deep Male)": "hi-IN-MadhurNeural",
+        "Swara (Clean Female)": "hi-IN-SwaraNeural",
+        "Asad (Bold Male)": "ur-PK-AsadNeural",
+        "--- WESTERN MODELS (US/UK) ---": "en-US-ChristopherNeural",
+        "Christopher (US - Documentary)": "en-US-ChristopherNeural",
+        "Guy (US - Narrative)": "en-US-GuyNeural",
+        "Ava (US - Soft)": "en-US-AvaNeural",
+        "Thomas (UK - Formal)": "en-GB-ThomasNeural",
+        "Libby (UK - Professional)": "en-GB-LibbyNeural",
+        "--- INDIAN ACCENT ENGLISH ---": "en-IN-PrabhatNeural",
+        "Prabhat (News Style)": "en-IN-PrabhatNeural",
+        "Ananya (Modern)": "en-IN-AnanyaNeural"
     }
-    selected_v = st.selectbox("Select Voice Model:", list(v_map.keys()))
+    
+    selected_voice = st.selectbox("Choose Vocal Cord:", list(v_map.keys()))
     
     st.write("---")
-    st.markdown("### 🎚️ TUNING PANEL")
-    v_pitch = st.slider("Vocal Pitch (Bass/Treble)", -20, 20, -5)
-    v_rate = st.slider("Speech Rate (Speed)", -20, 20, -2)
+    st.markdown("### 🎚️ TUNING")
+    pitch = st.slider("Vocal Depth (Pitch)", -20, 20, -5)
+    speed = st.slider("Reading Speed", -20, 20, -2)
     
-    # Feature: Audio Format Selection
-    a_format = st.radio("Output Format:", ["mp3", "wav"], horizontal=True)
+    st.write("---")
+    # Feature 3: Background Music Suggestion (Visual Only for now)
+    st.markdown("🎵 **BGM Mood Suggestion:**")
+    bgm_mood = st.selectbox("Select video mood for BGM advice:", ["Serious/News", "Mysterious", "Cinematic", "Educational"])
+    if bgm_mood == "Serious/News":
+        st.caption("Tip: Use 'Low Bass' corporate tracks.")
 
 st.write("---")
 
-if st.button("🚀 GENERATE PROFESSIONAL AUDIO"):
-    if not text_data.strip():
-        st.warning("Please enter some text in the script editor first.")
+# Generation Logic
+if st.button("🚀 GENERATE MASTER AUDIO"):
+    if "---" in selected_voice:
+        st.error("Please select a specific voice, not a category header.")
+    elif not script.strip():
+        st.warning("Script is empty! Please write something.")
     else:
         try:
-            target_voice = v_map[selected_v]
-            async def start_tts():
-                p = f"{v_pitch}Hz"
-                r = f"{v_rate}%"
-                # Updated for better quality
-                comm = edge_tts.Communicate(text_data, target_voice, pitch=p, rate=r)
-                await comm.save(f"output.{a_format}")
+            voice_id = v_map[selected_voice]
+            async def generate():
+                p = f"{pitch}Hz"
+                s = f"{speed}%"
+                communicate = edge_tts.Communicate(script, voice_id, pitch=p, rate=s)
+                await communicate.save("harsh_final.mp3")
 
-            with st.spinner("AI is crafting your voice..."):
-                asyncio.run(start_tts())
+            with st.spinner("AI is synthesizing your VIP audio..."):
+                asyncio.run(generate())
             
-            st.success("Audio Generated Successfully!")
-            st.audio(f"output.{a_format}")
-            with open(f"output.{a_format}", "rb") as f:
-                st.download_button(f"📥 Download {a_format.upper()}", f, file_name=f"Harsh_AI_Studio.{a_format}")
-        except Exception as err:
-            st.error(f"System Error: {err}")
+            st.success("✅ Audio Processed Successfully!")
+            st.audio("harsh_final.mp3")
+            
+            with open("harsh_final.mp3", "rb") as f:
+                st.download_button("📥 Download HQ Audio", f, file_name="Harsh_Master_Audio.mp3")
+                
+        except Exception as e:
+            st.error(f"Error encountered: {e}")
 
-st.markdown("<p style='text-align: center; color: #BDC1C6; margin-top: 50px;'>Harsh AI Studio | Pro Edition 2026</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #999; margin-top: 50px;'>Harsh AI Ultimate Studio v3.0 | 2026</p>", unsafe_allow_html=True)
