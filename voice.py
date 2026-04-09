@@ -1,40 +1,34 @@
-﻿import streamlit as st
+import streamlit as st
 import asyncio
 import edge_tts
 import base64
 
-# वेबसाइट का टाइटल और लेआउट
-st.set_page_config(page_title="Harsh AI Voice Generator", page_icon="🎙️")
-st.title("🎙️ My Personal AI Voice Studio")
-st.write("World Affairs के लिए प्रीमियम और रियलिस्टिक आवाज़ यहाँ जनरेट करें।")
+st.set_page_config(page_title="Harsh AI Voice Studio Pro", page_icon="🎙️")
+st.title("🎙️ World Affairs AI Voice Studio")
 
-# टेक्स्ट इनपुट बॉक्स
-text = st.text_area("अपनी स्क्रिप्ट यहाँ पेस्ट करें:", placeholder="नमस्ते दोस्तों, आज हम बात करेंगे...", height=200)
+text = st.text_area("अपनी स्क्रिप्ट यहाँ पेस्ट करें:", placeholder="नमस्ते दोस्तों...", height=200)
 
-# आवाज़ चुनने का ऑप्शन
 voice_option = st.selectbox(
     "आवाज़ चुनें:",
-    ("hi-IN-MadhurNeural (दमदार पुरुष)", "hi-IN-SwaraNeural (साफ महिला आवाज़)", "en-IN-PrabhatNeural (Indian English Male)")
+    ("hi-IN-MadhurNeural (भारी पुरुष आवाज़)", "hi-IN-SwaraNeural (साफ महिला आवाज़)")
 )
 
-# जनरेट बटन
+# यहाँ हम पिच और रफ़्तार को कंट्रोल करेंगे
 if st.button("Generate Realistic Voice"):
     if text:
         async def generate():
-            # आवाज़ का नाम सेट करना
             v_name = voice_option.split(" ")[0]
-            communicate = edge_tts.Communicate(text, v_name)
+            
+            # पिच -10Hz मतलब आवाज़ थोड़ी भारी (Deep) होगी
+            # रेट -5% मतलब बोलने की रफ़्तार थोड़ी कम होगी ताकि न्यूज़ साफ़ सुनाई दे
+            communicate = edge_tts.Communicate(text, v_name, pitch="-10Hz", rate="-5%")
             await communicate.save("output.mp3")
 
-        # रन करना
         asyncio.run(generate())
 
-        # ऑडियो प्लेयर दिखाना
         audio_file = open("output.mp3", "rb")
         audio_bytes = audio_file.read()
         st.audio(audio_bytes, format='audio/mp3')
-        
-        # डाउनलोड बटन
-        st.download_button(label="Audio Download Karein", data=audio_bytes, file_name="news_audio.mp3", mime="audio/mp3")
+        st.download_button(label="ऑडियो डाउनलोड करें", data=audio_bytes, file_name="news_pro.mp3", mime="audio/mp3")
     else:
         st.warning("कृपया पहले कुछ टेक्स्ट लिखें!")
