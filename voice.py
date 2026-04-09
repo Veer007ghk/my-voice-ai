@@ -3,107 +3,83 @@ import asyncio
 import edge_tts
 import os
 
-# Ultra Modern Page Setup
-st.set_page_config(
-    page_title="Harsh AI Studio", 
-    page_icon="🎙️", 
-    layout="wide"
-)
+# Page Setup
+st.set_page_config(page_title="Harsh AI Studio", page_icon="🎙️", layout="wide")
 
-# ChatGPT/Gemini Style Professional Design
+# Modern Light Mode Theme (Apple/Google Style)
 st.markdown("""
     <style>
     .stApp {
-        background-color: #0d0d0d;
-        color: #FFFFFF;
+        background-color: #F8F9FA;
+        color: #202124;
     }
     .main-header {
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+        background: linear-gradient(90deg, #1A73E8 0%, #4285F4 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-size: 2.5rem;
-        font-weight: 800;
+        font-size: 2.8rem;
+        font-weight: 700;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
     }
     .stTextArea textarea {
-        background-color: #1a1a1a !important;
-        color: #ffffff !important;
-        border: 1px solid #333 !important;
+        background-color: #FFFFFF !important;
+        color: #202124 !important;
+        border: 1px solid #DADCE0 !important;
         border-radius: 12px !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .stButton>button {
-        background: linear-gradient(45deg, #10a37f, #1a7f64) !important;
+        background-color: #1A73E8 !important;
         color: white !important;
         border: none !important;
-        border-radius: 10px !important;
-        padding: 12px 24px !important;
-        width: 100%;
-        font-weight: bold !important;
+        border-radius: 8px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
         transition: 0.3s;
     }
     .stButton>button:hover {
-        transform: scale(1.01);
-        box-shadow: 0 4px 15px rgba(16, 163, 127, 0.4);
+        background-color: #1765CC !important;
+        box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+    }
+    .voice-box {
+        background-color: #FFFFFF;
+        padding: 20px;
+        border-radius: 15px;
+        border: 1px solid #DADCE0;
     }
     label {
-        color: #888 !important;
+        color: #5F6368 !important;
+        font-weight: 600 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
 st.markdown("<h1 class='main-header'>Harsh AI Voice Studio</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #5F6368;'>प्रोफेशनल और रियलिस्टिक वॉइस जनरेशन</p>", unsafe_allow_html=True)
 
-col1, col2 = st.columns([1.5, 1], gap="large")
+col1, col2 = st.columns([1.6, 1], gap="medium")
 
 with col1:
-    text_area = st.text_area("SCRIPT INPUT", height=380, placeholder="अपनी स्क्रिप्ट यहाँ लिखें...", key="input_text")
-    if st.button("🗑️ Clear Canvas"):
+    text_area = st.text_area("अपनी स्क्रिप्ट यहाँ लिखें", height=400, placeholder="नमस्ते दोस्तों, आज हम चर्चा करेंगे...", key="input_text")
+    if st.button("🗑️ Clear Script"):
         st.session_state.input_text = ""
         st.rerun()
 
 with col2:
-    st.markdown("### CONFIGURATION")
-    voice_map = {
-        "--- Indian Hindi ---": "hi-IN-MadhurNeural",
-        "Male: Madhur (Hindi)": "hi-IN-MadhurNeural",
-        "Female: Swara (Hindi)": "hi-IN-SwaraNeural",
-        "--- US English ---": "en-US-GuyNeural",
-        "Male: Christopher (US)": "en-US-ChristopherNeural",
-        "Female: Ava (US)": "en-US-AvaNeural",
-        "--- UK English ---": "en-GB-ThomasNeural",
-        "Male: Thomas (UK)": "en-GB-ThomasNeural",
-        "Female: Libby (UK)": "en-GB-LibbyNeural"
-    }
-    voice_choice = st.selectbox("VOCAL MODEL", list(voice_map.keys()))
+    st.markdown("### 🎙️ वॉइस सिलेक्शन")
     
-    st.write("---")
-    pitch = st.slider("VOCAL PITCH", -20, 20, -5)
-    rate = st.slider("SPEECH RATE", -20, 20, -2)
-
-st.write("---")
-
-if st.button("🚀 RUN GENERATION"):
-    if "---" in voice_choice:
-        st.error("Please select a valid voice model.")
-    elif not text_area.strip():
-        st.warning("Script is empty.")
-    else:
-        try:
-            target_v = voice_map[voice_choice]
-            async def run_tts():
-                p = f"{pitch}Hz"
-                r = f"{rate}%"
-                comm = edge_tts.Communicate(text_area, target_v, pitch=p, rate=r)
-                await comm.save("output.mp3")
-
-            with st.spinner("AI Processing..."):
-                asyncio.run(run_tts())
-            
-            st.audio("output.mp3")
-            with open("output.mp3", "rb") as f:
-                st.download_button("⬇️ Download Audio", f, file_name="harsh_audio.mp3")
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-st.markdown("<p style='text-align: center; color: #333; margin-top: 50px;'>Harsh AI | 2026 Pro Version</p>", unsafe_allow_html=True)
+    # 15 प्रीमियम आवाजों का कलेक्शन (हिंदी पर विशेष जोर)
+    voice_map = {
+        "--- 🇮🇳 शुद्ध हिंदी (Hindi) ---": "hi-IN-MadhurNeural",
+        "1. मधुर (Madhur) - दमदार पुरुष": "hi-IN-MadhurNeural",
+        "2. स्वर (Swara) - साफ महिला": "hi-IN-SwaraNeural",
+        "3. असद (Asad) - भारी आवाज़ (Deep Base)": "ur-PK-AsadNeural",
+        "4. उज्मा (Uzma) - शांत महिला": "ur-PK-UzmaNeural",
+        "5. प्रभात (Prabhat) - न्यूज़ एंकर स्टाइल": "en-IN-PrabhatNeural",
+        "6. नीरजा (Neerja) - सॉफ्ट महिला": "en-IN-NeerjaNeural",
+        "7. रवि (Ravi) - दोस्ताना लहजा": "en-IN-RaviNeural",
+        
+        "--- 🇺🇸 अमेरिकन एक्सेंट (US English) ---": "en-US-GuyNeural",
+        "8. क्रिस्टोफर (Christopher) - भारी पुरुष": "en-US-ChristopherNeural",
+        "9. गाय (Guy) -
