@@ -10,121 +10,100 @@ st.set_page_config(
     layout="wide"
 )
 
-# Professional AI Theme (ChatGPT/Gemini Style)
+# ChatGPT/Gemini Style Professional Design
 st.markdown("""
     <style>
-    /* पूरे पेज का बैकग्राउंड - Deep Dark */
     .stApp {
-        background-color: #050505;
+        background-color: #0d0d0d;
         color: #FFFFFF;
     }
-    
-    /* टॉप हेडर स्टाइल */
     .main-header {
-        background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-weight: 800;
         text-align: center;
-        margin-bottom: 5px;
-        font-family: 'Inter', sans-serif;
+        margin-bottom: 20px;
     }
-
-    /* कार्ड्स और कंटेनर - Modern Border */
-    div[data-testid="stVerticalBlock"] > div:has(div.stTextArea) {
-        background: #111111;
-        padding: 25px;
-        border-radius: 20px;
-        border: 1px solid #222222;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    /* टेक्स्ट एरिया कस्टमाइजेशन */
     .stTextArea textarea {
-        background-color: #000000 !important;
+        background-color: #1a1a1a !important;
         color: #ffffff !important;
-        border: 1px solid #333333 !important;
+        border: 1px solid #333 !important;
         border-radius: 12px !important;
-        font-family: 'Monaco', monospace;
     }
-
-    /* बटन - ChatGPT Style Green/Blue */
     .stButton>button {
-        background-color: #10a37f !important; /* ChatGPT Green */
+        background: linear-gradient(45deg, #10a37f, #1a7f64) !important;
         color: white !important;
-        border-radius: 10px !important;
         border: none !important;
+        border-radius: 10px !important;
         padding: 12px 24px !important;
-        font-weight: 600 !important;
         width: 100%;
-        transition: all 0.3s ease;
+        font-weight: bold !important;
+        transition: 0.3s;
     }
     .stButton>button:hover {
-        background-color: #1a7f64 !important;
-        transform: scale(1.02);
+        transform: scale(1.01);
+        box-shadow: 0 4px 15px rgba(16, 163, 127, 0.4);
     }
-
-    /* स्लाइडर्स और सेलेक्ट बॉक्स */
-    .stSlider [data-baseweb="slider"] {
-        margin-top: 20px;
-    }
-    
-    /* लेबल टेक्स्ट */
     label {
-        color: #999999 !important;
-        font-weight: 500 !important;
-    }
-
-    /* ऑडियो प्लेयर को क्लीन बनाना */
-    audio {
-        width: 100%;
-        border-radius: 10px;
-        margin-top: 20px;
-        filter: invert(100%) hue-rotate(180deg) brightness(1.5); /* Dark Mode Audio Player */
+        color: #888 !important;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# हैडर
 st.markdown("<h1 class='main-header'>Harsh AI Voice Studio</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #666;'>Ultimate AI Voice Production Platform</p>", unsafe_allow_html=True)
 
-# मुख्य कंटेंट
-st.markdown("---")
-
-col1, col2 = st.columns([1.5, 1])
+col1, col2 = st.columns([1.5, 1], gap="large")
 
 with col1:
-    # टेक्स्ट इनपुट
-    text_area = st.text_area("SCRIPT INPUT", height=400, placeholder="अपनी स्क्रिप्ट यहाँ लिखें या पेस्ट करें...", key="main_text")
-    
-    # क्लियर बटन छोटा और साइड में
-    if st.button("Clear Desktop"):
-        st.session_state.main_text = ""
+    text_area = st.text_area("SCRIPT INPUT", height=380, placeholder="अपनी स्क्रिप्ट यहाँ लिखें...", key="input_text")
+    if st.button("🗑️ Clear Canvas"):
+        st.session_state.input_text = ""
         st.rerun()
 
 with col2:
     st.markdown("### CONFIGURATION")
-    
     voice_map = {
         "--- Indian Hindi ---": "hi-IN-MadhurNeural",
-        "Male: Madhur (Pure Hindi)": "hi-IN-MadhurNeural",
-        "Female: Swara (Pure Hindi)": "hi-IN-SwaraNeural",
-        "--- US English (Global) ---": "en-US-GuyNeural",
-        "Male: Christopher (Deep US)": "en-US-ChristopherNeural",
-        "Male: Guy (Neutral US)": "en-US-GuyNeural",
-        "Female: Ava (Soft US)": "en-US-AvaNeural",
-        "--- UK English (Royal) ---": "en-GB-ThomasNeural",
-        "Male: Thomas (British)": "en-GB-ThomasNeural",
-        "Female: Libby (British)": "en-GB-LibbyNeural"
+        "Male: Madhur (Hindi)": "hi-IN-MadhurNeural",
+        "Female: Swara (Hindi)": "hi-IN-SwaraNeural",
+        "--- US English ---": "en-US-GuyNeural",
+        "Male: Christopher (US)": "en-US-ChristopherNeural",
+        "Female: Ava (US)": "en-US-AvaNeural",
+        "--- UK English ---": "en-GB-ThomasNeural",
+        "Male: Thomas (UK)": "en-GB-ThomasNeural",
+        "Female: Libby (UK)": "en-GB-LibbyNeural"
     }
+    voice_choice = st.selectbox("VOCAL MODEL", list(voice_map.keys()))
     
-    voice_choice = st.selectbox("SELECT VOCAL MODEL", list(voice_map.keys()))
-    
-    st.markdown("---")
+    st.write("---")
     pitch = st.slider("VOCAL PITCH", -20, 20, -5)
     rate = st.slider("SPEECH RATE", -20, 20, -2)
 
-# जेनरेट बटन
-st.markdown("<br>", unsafe_allow_
+st.write("---")
+
+if st.button("🚀 RUN GENERATION"):
+    if "---" in voice_choice:
+        st.error("Please select a valid voice model.")
+    elif not text_area.strip():
+        st.warning("Script is empty.")
+    else:
+        try:
+            target_v = voice_map[voice_choice]
+            async def run_tts():
+                p = f"{pitch}Hz"
+                r = f"{rate}%"
+                comm = edge_tts.Communicate(text_area, target_v, pitch=p, rate=r)
+                await comm.save("output.mp3")
+
+            with st.spinner("AI Processing..."):
+                asyncio.run(run_tts())
+            
+            st.audio("output.mp3")
+            with open("output.mp3", "rb") as f:
+                st.download_button("⬇️ Download Audio", f, file_name="harsh_audio.mp3")
+        except Exception as e:
+            st.error(f"Error: {e}")
+
+st.markdown("<p style='text-align: center; color: #333; margin-top: 50px;'>Harsh AI | 2026 Pro Version</p>", unsafe_allow_html=True)
